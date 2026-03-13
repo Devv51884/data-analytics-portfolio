@@ -42,6 +42,13 @@ def Monthly_Sales_Trend_Analysis(df:pd.DataFrame) -> pd.DataFrame:
     result.to_csv(os.path.join(OUTPUT_DIR , "monthly_sales_trend.csv"),index=False)
     return result
 
+#category wise sales analysis
+def Category_Wise_Sales_Analysis(df:pd.DataFrame) -> pd.DataFrame:
+    result = df.groupby("Category", as_index=False)["Sales"].sum().sort_values("Sales",ascending=False)
+    result.to_csv(os.path.join(OUTPUT_DIR , "category_wise_sales.csv"),index=False)
+    return result
+
+
 #plot region sales
 def Plot_Region_Sales(df:pd.DataFrame) -> None:
     plt.figure(figsize=(10,6))
@@ -76,6 +83,19 @@ def Plot_Monthly_Sales_Trend(df:pd.DataFrame) -> None:
     plt.savefig(os.path.join(CHART_DIR , "monthly_sales_trend.png"))
     plt.close()
 
+#plot category wise sales
+def Plot_Category_Wise_Sales(df:pd.DataFrame) -> None:
+    plt.figure(figsize=(10,6))
+    plt.bar(df["Category"], df["Sales"], color="orange")
+    plt.title("Category Wise Sales")
+    plt.xlabel("Category")
+    plt.ylabel("Total Sales")
+    plt.xticks(rotation=45, ha="right")
+    plt.tight_layout()
+    plt.savefig(os.path.join(CHART_DIR , "category_wise_sales.png"))
+    plt.close()
+
+# main function to execute the analysis
 def main():
     df = Load_Sales_Data(DATA_PATH)
     df = Clean_Sales_Data(df)
@@ -92,6 +112,7 @@ def main():
     region_df = Region_Wise_Sales_Analysis(df)
     top_products_df = Top_Products_By_Sales(df)
     Monthly_df = Monthly_Sales_Trend_Analysis(df)
+    Category_df = Category_Wise_Sales_Analysis(df)
 
     print("\n Region Wise Sales Analysis :")
     print(region_df)
@@ -105,6 +126,7 @@ def main():
     Plot_Region_Sales(region_df)
     Plot_Top_Products_By_Sales(top_products_df)
     Plot_Monthly_Sales_Trend(Monthly_df)
+    Plot_Category_Wise_Sales(Category_df)
 
     print("\n Analysis completed successfully. Charts and CSV files have been saved in the output directory.")
 
