@@ -17,11 +17,11 @@ To analyze a sample kaggle sales dataset and generate business insights.
 6. Exported outputs and charts
 
 ## Key Insights
-- North and West regions contributed strongly to sales
-- Electronics products generated high revenue
+- East and West regions contributed strongly to sales
+- Canon imageClass 2200 Advanced Copier products generated high Sales
 - Monthly sales trend helps identify growth periods
 
 ## How to Run
 ```bash
 pip install -r requirements.txt
-python src/sales_analysis.py
+python ./src/sales_analysis.py
