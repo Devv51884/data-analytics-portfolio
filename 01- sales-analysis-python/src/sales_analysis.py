@@ -1,17 +1,17 @@
 import os
-import pandas as pandas
+import pandas as pd
 import matplotlib.pyplot as plt 
 
 BASE_DIR   = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_PATH  = os.path.join(BASE_DIR, "data" , "sample_sales.csv")
-OUTPUT_DIR = os.path.join(BASE_DIR , "output")
+OUTPUT_DIR = os.path.join(BASE_DIR , "outputs")
 CHART_DIR  = os.path.join(OUTPUT_DIR , "charts")
 
 os.makedirs(CHART_DIR, exist_ok=True)
 
 # Load the sales data from the CSV file
 def Load_Sales_Data(path:str) -> pd.DataFrame:
-    df = pd.read_csv(path)
+    df = pd.read_csv(path, encoding="cp1252")
     df["Order Date"] = pd.to_datetime(df["Order Date"])
     return df
 
@@ -31,13 +31,13 @@ def Region_Wise_Sales_Analysis(df:pd.DataFrame) -> pd.DataFrame:
 
 # top 10 products by sales
 def Top_Products_By_Sales(df:pd.DataFrame) -> pd.DataFrame:
-    result = df.groupby("Product" , as_index=False)["Sales"].sum().sort_values("Sales", ascending = False).head(10)
+    result = df.groupby("Product Name" , as_index=False)["Sales"].sum().sort_values("Sales", ascending = False).head(10)
     result.to_csv(os.path.join(OUTPUT_DIR , "top_10_products_by_sales.csv"),index=False)
     return result
 
 # monthly sales trend analysis
-def Monthly_Sales_Trend_Analysis(df:pd.DataFrame) -> pd.DataFame:
-    df["Month"] = df[" Order date"].dt.to_period("M").astype(str)
+def Monthly_Sales_Trend_Analysis(df:pd.DataFrame) -> pd.DataFrame:
+    df["Month"] = df["Order Date"].dt.to_period("M").astype(str)
     result = df.groupby("Month" , as_index=False)["Sales"].sum().sort_values("Month")
     result.to_csv(os.path.join(OUTPUT_DIR , "monthly_sales_trend.csv"),index=False)
     return result
@@ -45,7 +45,7 @@ def Monthly_Sales_Trend_Analysis(df:pd.DataFrame) -> pd.DataFame:
 #plot region sales
 def Plot_Region_Sales(df:pd.DataFrame) -> None:
     plt.figure(figsize=(10,6))
-    plt.bar(region_df["Region"], region_df["Sales"], color="skyblue")
+    plt.bar(df["Region"], df["Sales"], color="skyblue")
     plt.title("Region Wise Sales")
     plt.xlabel("Region")
     plt.ylabel("Total Sales")
@@ -56,7 +56,7 @@ def Plot_Region_Sales(df:pd.DataFrame) -> None:
 #plot top products by sales
 def Plot_Top_Products_By_Sales(df:pd.DataFrame) -> None:
     plt.figure(figsize=(10,6))
-    plt.bar(top_products_df["Product"], top_products_df["Sales"], color="salmon")
+    plt.bar(df["Product Name"], df["Sales"], color="salmon")
     plt.title("Top 10 Products by Sales")
     plt.xlabel("Product")
     plt.ylabel("Total Sales")
@@ -68,7 +68,7 @@ def Plot_Top_Products_By_Sales(df:pd.DataFrame) -> None:
 #plot monthly sales trend
 def Plot_Monthly_Sales_Trend(df:pd.DataFrame) -> None:
     plt.figure(figsize=(10,6))
-    plt.plot(Monthly_df["Month"],Monthly_df["Sales"], marker="o", color="green")
+    plt.plot(df["Month"], df["Sales"], marker="o", color="green")
     plt.title("Monthly Sales Trend")
     plt.xlabel("Month")
     plt.ylabel("Total Sales")
@@ -101,6 +101,10 @@ def main():
 
     print("\n Monthly Sales Trend Analysis :")
     print(Monthly_df)
+
+    Plot_Region_Sales(region_df)
+    Plot_Top_Products_By_Sales(top_products_df)
+    Plot_Monthly_Sales_Trend(Monthly_df)
 
     print("\n Analysis completed successfully. Charts and CSV files have been saved in the output directory.")
 
