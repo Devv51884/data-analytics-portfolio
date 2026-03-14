@@ -1,0 +1,2 @@
+CREATE DATABASE IF NOT EXISTS Online_Retail_DB;
+USE Online_Retail_DB;
